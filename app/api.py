@@ -200,5 +200,5 @@ async def index():
 async def autor():
     """Rota para retornar o autor da aplicação."""
 
-    LOGGER.info(f"Usuário acessou a rota de autor")
+    LOGGER.info("Usuário acessou a rota de autor")
     return {"mensagem": "Gisele Ferreira da Silva"}
