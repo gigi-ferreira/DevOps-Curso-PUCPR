@@ -6,12 +6,28 @@ from datetime import datetime, timezone
 from functools import lru_cache
 from typing import Annotated, List
 import os
-
+import logging
 from fastapi import FastAPI, Depends
+from fastapi.responses import JSONResponse
 from sqlmodel import SQLModel, Session, create_engine, select
 
 from .modelo import Tarefa
 
+LOGGER = logging.getLogger("aplicacao")
+LOGGER.setLevel(logging.DEBUG)
+
+saida_padrao = logging.StreamHandler()
+arquivo = logging.FileHandler("aplicacao.log", encoding='utf-8')
+
+formatador = logging.Formatter(
+    "%name)s | %(levelname)s | %(asctime)s | %(filename)s:%(lineno)s | %(message)s"
+    )
+
+saida_padrao.setFormatter(formatador)
+arquivo.setFormatter(formatador)
+
+LOGGER.addHandler(saida_padrao)
+LOGGER.addHandler(arquivo)
 
 @lru_cache
 def obter_engine():
@@ -31,7 +47,7 @@ def obter_engine():
 
     for nome, valor in configuracoes.items():
         if not valor:
-            raise RuntimeError(f"{nome} está faltando")
+            LOGGER.critical("%s está faltando", nome)
 
     return create_engine(
         f"postgresql+psycopg://{database_username}:{database_password}"
@@ -59,6 +75,12 @@ async def inicializacao(_: FastAPI):
 
 APP = FastAPI(lifespan=inicializacao)
 
+# Rota tratamento de erro 404
+@APP.exception_handler(404)
+async def trata_404(_, __):
+    """Rota criada para tratamento de erro do 404"""
+    LOGGER.error("Página inexistente")
+    return JSONResponse({"mensagem": "Página inexistente"})
 
 # GET /tarefas: Lista todas as tarefas
 @APP.get("/tarefas")
@@ -66,6 +88,8 @@ async def tarefas(sessao: SESSAO) -> List[Tarefa]:
     """Rota para listar as tarefas."""
 
     lista_tarefas = sessao.exec(select(Tarefa).offset(0)).all()
+
+    LOGGER.info("Usuário listou todas as tarefas")
 
     return lista_tarefas
 
@@ -87,6 +111,9 @@ async def post_tarefa(
         data_criacao=data,
     )
 
+    LOGGER.info(f"Usuário criou a tarefa {tarefa_nova.get_id()}")
+    LOGGER.debug(f"Dados da tarefa: {tarefa_nova}")
+
     sessao.add(tarefa_nova)
     sessao.commit()
     sessao.refresh(tarefa_nova)
@@ -103,8 +130,10 @@ async def tarefa_especifica(sessao: SESSAO, id_tarefa: int) -> Tarefa:
     resultado = sessao.exec(regra).all()
 
     if resultado:
+        LOGGER.info(f"Usuário listou a tafefa {resultado[0].get_id()}")
         return resultado[0]
 
+    LOGGER.info("Usuário tentou acessar uma tarefa inexistente")
     return {"mensagem": "Tarefa não existe"}
 
 
@@ -117,9 +146,13 @@ async def concluir_tarefa(sessao: SESSAO, id_tarefa: int):
     resultado = sessao.exec(regra).all()
 
     if not resultado:
+        LOGGER.info("Usuário tentou finalizar uma tarefa inexistente")
         return {"mensagem": "Tarefa não existe"}
 
     if resultado[0].concluida is True:
+        LOGGER.info(
+            f"Usuário tentou finalizar a tafefa {resultado[0].get_id()} que já está finalizada"
+            )
         return {"mensagem": "Tarefa já finalizada"}
 
     resultado[0].finalizar()
@@ -128,6 +161,7 @@ async def concluir_tarefa(sessao: SESSAO, id_tarefa: int):
     sessao.commit()
     sessao.refresh(resultado[0])
 
+    LOGGER.info(f"Usuário finalizou a tafefa {resultado[0].get_id()}")
     return {"mensagem": "Tarefa atualizada"}
 
 
@@ -140,6 +174,7 @@ async def apagar_tarefa(sessao: SESSAO, id_tarefa: int):
     resultado = sessao.exec(regra).all()
 
     if not resultado:
+        LOGGER.info("Usuário tentou apagar uma tarefa inexistente")
         return {"mensagem": "Tarefa não existe"}
 
     tarefa = resultado[0]
@@ -147,6 +182,7 @@ async def apagar_tarefa(sessao: SESSAO, id_tarefa: int):
     sessao.delete(tarefa)
     sessao.commit()
 
+    LOGGER.info(f"Usuário removeu a tarefa {tarefa.get_id()}")
     return {"mensagem": "Tarefa removida"}
 
 
@@ -155,6 +191,7 @@ async def apagar_tarefa(sessao: SESSAO, id_tarefa: int):
 async def index():
     """Rota raiz."""
 
+    LOGGER.info("Usuário acessou a raíz")
     return {"mensagem": "Olá, mundo!"}
 
 
@@ -163,4 +200,5 @@ async def index():
 async def autor():
     """Rota para retornar o autor da aplicação."""
 
+    LOGGER.info(f"Usuário acessou a rota de autor")
     return {"mensagem": "Gisele Ferreira da Silva"}
