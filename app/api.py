@@ -20,8 +20,8 @@ saida_padrao = logging.StreamHandler()
 arquivo = logging.FileHandler("aplicacao.log", encoding='utf-8')
 
 formatador = logging.Formatter(
-    "%name)s | %(levelname)s | %(asctime)s | %(filename)s:%(lineno)s | %(message)s"
-    )
+    "%(name)s | %(levelname)s | %(asctime)s | %(filename)s:%(lineno)s | %(message)s"
+)
 
 saida_padrao.setFormatter(formatador)
 arquivo.setFormatter(formatador)
@@ -54,16 +54,13 @@ def obter_engine():
         f"@{database_address}/{database}"
     )
 
-
 def criar_sessao():
     """Função utilitária para criar sessão no banco de dados."""
 
     with Session(obter_engine()) as sessao:
         yield sessao
 
-
 SESSAO = Annotated[Session, Depends(criar_sessao)]
-
 
 @asynccontextmanager
 async def inicializacao(_: FastAPI):
@@ -71,7 +68,6 @@ async def inicializacao(_: FastAPI):
 
     SQLModel.metadata.create_all(obter_engine())
     yield
-
 
 APP = FastAPI(lifespan=inicializacao)
 
@@ -92,7 +88,6 @@ async def tarefas(sessao: SESSAO) -> List[Tarefa]:
     LOGGER.info("Usuário listou todas as tarefas")
 
     return lista_tarefas
-
 
 # POST /tarefas: Cria tarefa
 @APP.post("/tarefas", status_code=201)
@@ -120,7 +115,6 @@ async def post_tarefa(
 
     return {"mensagem": "OK"}
 
-
 # GET /tarefas/{id_tarefa}: Visualiza tarefa específica
 @APP.get("/tarefas/{id_tarefa}")
 async def tarefa_especifica(sessao: SESSAO, id_tarefa: int) -> Tarefa:
@@ -135,7 +129,6 @@ async def tarefa_especifica(sessao: SESSAO, id_tarefa: int) -> Tarefa:
 
     LOGGER.info("Usuário tentou acessar uma tarefa inexistente")
     return {"mensagem": "Tarefa não existe"}
-
 
 # PUT /tarefas/{id_tarefa}: Atualiza tarefa específica
 @APP.put("/tarefas/{id_tarefa}")
@@ -164,7 +157,6 @@ async def concluir_tarefa(sessao: SESSAO, id_tarefa: int):
     LOGGER.info(f"Usuário finalizou a tafefa {resultado[0].get_id()}")
     return {"mensagem": "Tarefa atualizada"}
 
-
 # DELETE /tarefas/{id_tarefa}: Exclui tarefa
 @APP.delete("/tarefas/{id_tarefa}")
 async def apagar_tarefa(sessao: SESSAO, id_tarefa: int):
@@ -185,7 +177,6 @@ async def apagar_tarefa(sessao: SESSAO, id_tarefa: int):
     LOGGER.info(f"Usuário removeu a tarefa {tarefa.get_id()}")
     return {"mensagem": "Tarefa removida"}
 
-
 # GET /: Rota inicial
 @APP.get("/")
 async def index():
@@ -193,7 +184,6 @@ async def index():
 
     LOGGER.info("Usuário acessou a raíz")
     return {"mensagem": "Olá, mundo!"}
-
 
 # GET /autor: Retorna o autor da aplicação
 @APP.get("/autor")

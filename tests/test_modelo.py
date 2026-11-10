@@ -15,17 +15,17 @@ def test_nova_tarefa():
     """Teste unitário para criar uma nova tarefa"""
     t = criar_tarefa_mock()
 
-    assert t.get_id() == None
+    assert t.get_id() is None
     assert t.titulo == "Tarefa teste"
-    assert t.descricao == None
+    assert t.descricao is None
     assert t.data_criacao == datetime.now().replace(microsecond=0)
-    assert t.data_conclusao == None
-    assert t.concluida == False
+    assert t.data_conclusao is None
+    assert t.concluida is False
 
 def test_tarefa_concluida():
     """Teste unitário para concluir uma tarefa"""
     t = criar_tarefa_mock()
 
     t.finalizar()
-    assert t.concluida == True
+    assert t.concluida is True
     assert t.data_conclusao == datetime.now().astimezone(timezone.utc).replace(microsecond=0)
