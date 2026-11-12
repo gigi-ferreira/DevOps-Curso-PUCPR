@@ -1,9 +1,9 @@
 # Projeto DevOps - Implementação de Pipeline CI/CD
 ## 1 - Sobre o Projeto
 Este projeto tem como objetivo implementar práticas de DevOps por meio da automação dos processos de integração contínua (Continuous Integration – CI) e entrega contínua (Continuous Delivery – CD).
-#
+
 A solução utiliza uma aplicação desenvolvida em Python com o framework FastAPI, integrando ferramentas de análise estática de código, execução automatizada de testes, construção de imagens Docker e publicação da aplicação em ambiente de produção.
-#
+
 A automação foi realizada utilizando o GitHub Actions, permitindo que alterações realizadas no repositório sejam verificadas e disponibilizadas de maneira automatizada.
 
 ## 2 - Tecnologias utilizadas
