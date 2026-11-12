@@ -9,6 +9,7 @@ A automação foi realizada utilizando o GitHub Actions, permitindo que alteraç
 ## 2 - Tecnologias utilizadas
 - Python 3.14: Linguagem utilizada para o desenvolvimento da aplicção.
 - FastAPI: Framework utilizado para disponibilizar os serviços por meio de uma API REST.
+- PostgreSQL: Banco de dados relacional utilizado para manter os registros das tarefas.
 - Pytest: Ferramenta utilizada para a execução de testes no código.
 - Pylint: Ferramenta utilizada para verifcação da qualidade do código.
 - Docker: Tecnologia utilizada para empacotar a aplicação em uma imagem de contêiner.
@@ -17,3 +18,17 @@ A automação foi realizada utilizando o GitHub Actions, permitindo que alteraç
 - Fossa: Ferramenta de gerenciamento de licenças do código.
 - Render: Plataforma utilizada para implantação e disponibilização da aplicação.
 
+## 3 - Execução local
+Para executar a aplicação localmente, é necessário possuir Python instalado, acesso ao banco de dados PostgreSQL e as dependências definidas no projeto.
+
+### 3.1 - Pré-requisitos
+- Python 3.14 instalado.
+- Git.
+- PostgrSQL ou contêiner com o PostgreSQL em execução.
+
+### 3.2 - Clonar repositório
+Abra um terminal e execute o comando abaixo para obter o código fonte:
+
+[
+    git clone https://github.com/gigi-ferreira/DevOps-Curso-PUCPR
+]
