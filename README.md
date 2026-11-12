@@ -29,6 +29,6 @@ Para executar a aplicação localmente, é necessário possuir Python instalado,
 ### 3.2 - Clonar repositório
 Abra um terminal e execute o comando abaixo para obter o código fonte:
 
-[
-    git clone https://github.com/gigi-ferreira/DevOps-Curso-PUCPR
-]
+```bash
+git clone https://github.com/gigi-ferreira/DevOps-Curso-PUCPR.git
+```
