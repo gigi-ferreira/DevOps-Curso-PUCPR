@@ -82,6 +82,7 @@ Após a inicialização, a aplicação estará disponível em:
 
 #
 Aluna: Gisele Ferreira da Silva
+
 Professor: Pedro Rocha Horchulhack
 
 Link da aplicação web disponível na plataforma Render: [Aplicação Tarefas](https://api-tarefas-e1d5.onrender.com)
